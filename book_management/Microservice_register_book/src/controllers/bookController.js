@@ -24,7 +24,7 @@ class BookController {
         book: newBook, // This includes the book created
       });
     } catch (error) {
-      console.error('Error adding Dog:', error);
+      console.error('Error adding book:', error);
       res.status(500).json({ success: false, message: 'Error adding Book' });
     }
   }

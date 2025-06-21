@@ -1,37 +1,34 @@
-import { BookModel } from '../models/bookModel.js';
+import { BookModel } from '../models/bookModels.js';
 
-const deleteBook = async (req, res) => {
-  try {
-    const { id } = req.params;
+class BookController {
+  async addBook(req, res) {
+    try {
+      const { title, author, category, lenguage, description, total_copies, available_copies, location} = req.body;
 
-    // Validación: que exista y sea numérico
-    if (!id || isNaN(id)) {
-      return res.status(400).json({
-        message: 'A valid numeric ID is required in the URL.'
+      // Create the new book and save it in the DB
+      const newBook = await BookModel.create({
+        title,
+        author,
+        category,
+        lenguage,
+        description,
+        total_copies: 1, // Asignar un valor por defecto
+        available_copies: 1, // Asignar un valor por defecto
+        location,
       });
-    }
 
-    // Eliminar el libro por su ID
-    const result = await BookModel.destroy({
-      where: { id }
-    });
-
-    if (result === 0) {
-      return res.status(404).json({
-        message: `No book found with ID ${id}`
+      // Return the new book in the answer
+      res.json({
+        success: true,
+        message: 'Book remove successfully',
+        book: newBook, // This includes the book created
       });
+    } catch (error) {
+      console.error('Error adding Dog:', error);
+      res.status(500).json({ success: false, message: 'Error adding Book' });
     }
-
-    res.status(200).json({
-      message: `Book with ID ${id} deleted successfully`
-    });
-  } catch (error) {
-    console.error('Error deleting book:', error);
-    res.status(500).json({
-      message: 'Internal server error while deleting book'
-    });
   }
-};
+}
 
-export { deleteBook };
-
+const bookController = new BookController();
+export { bookController };
